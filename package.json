@@ -1,0 +1,24 @@
+{
+  "name": "challenge12",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ximenacu/Employee_Tracker_CH12.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ximenacu/Employee_Tracker_CH12/issues"
+  },
+  "homepage": "https://github.com/Ximenacu/Employee_Tracker_CH12#readme",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "inquirer-maxlength-input-prompt": "^1.0.2"
+  }
+}

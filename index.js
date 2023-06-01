@@ -8,7 +8,7 @@ const MaxLengthInputPrompt = require('inquirer-maxlength-input-prompt')
 // to install: npm i inquirer-maxlength-input-prompt
 // to open My SQL shell:  mysql -u root -p 
 // -----------------Packages 
-const list = ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role"]
+const list = ["View all Departments", "View all Roles", "View all Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Role"]
 // begin: 
 inquirer.registerPrompt('maxlength-input', MaxLengthInputPrompt)
 let mydata={}
@@ -16,7 +16,7 @@ inquirer
   .prompt([
     {
       type: 'list',
-      message: 'Select a SHAPE',
+      message: 'What would you like to do?',
       choices: list,
       default: 'Circle',
       name: 'name',
