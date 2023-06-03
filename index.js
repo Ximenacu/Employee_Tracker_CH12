@@ -9,13 +9,12 @@ const inquirer = require('inquirer');
 const MaxLengthInputPrompt = require('inquirer-maxlength-input-prompt')
 // to install: npm i inquirer-maxlength-input-prompt
 // const mysql = require('mysql2');
-// to install: npm install mysql2
+// to install: npm install mysql2---------Connected  database in server.js file
 const db = require('./db/server');
 // -----------------Packages 
 
-// ------------------Connect to database in connections.js file
 
-// ------------------Inquirer
+// ------------------Inquirer Menu
 const list = ["View all Departments", "View all Roles", "View all Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Role"]
 inquirer.registerPrompt('maxlength-input', MaxLengthInputPrompt)
 let mydata={}
@@ -31,7 +30,6 @@ var menu = () => {
     },
   )
   .then( function savedata (response){
-    // console.log(response)
     mydata=response;
     switch (mydata.name) {
       case "View all Departments": 
@@ -47,7 +45,7 @@ var menu = () => {
         addDep();
         break;
       case "Add a Role":
-        view(mydata,"department");
+        addRole();
         break;
       case "Add an Employee":
         view(mydata,"department");
@@ -78,9 +76,15 @@ var quitOrNext = () => {
     console.log(response)
     if (response.name == "Next Search"){
       menu();
+    } else {
+      db.query(`quit;`, function (err, results) {
+        console.log("See you!")
+      });
     }
   });
 }
+
+
 // ------------ initialize inquierer.
 (function () {
   menu();
@@ -90,9 +94,13 @@ var quitOrNext = () => {
 const view = (specific) => {
   console.log("In function VIEW: ", specific);
   db.query(`SELECT * FROM ${specific}`, function (err, results) {
+    let res = results;
     console.table(results)
+    // console.log(res.length)
+    // console.log(res[0].dep_name)
+    return res;
+    quitOrNext();
   });
-  // quitOrNext();
 } 
 
 // ----------------------------------------------------------
@@ -114,17 +122,52 @@ const addDep = () => {
 
 } 
 
+const addRole = () => {
+  console.log("In function ADDROLE: ");
+  var depchoice =[];
+  view("department");
+  for (n=0; n<res.lenght;n++){
+    depchoice.push(res[n].dep_name)
+  }
+  console.log(depchoice);
+// HEEEEEEEEEEEEEEEEEEEEEEEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+  // inquirer
+  // .prompt([
+  //   {
+  //     type: 'maxlength-input',
+  //     maxLength: 80,
+  //     message: 'Input the name of the New Role',
+  //     name: 'title',
+  //   },
+  //   {
+  //     type: 'input',
+  //     message: 'What is this Roles salary',
+  //     name: 'salary',
+  //   },
+  //   {
+  //     type: 'list',
+  //     message: 'To which department does this role belong to?',
+  //     choices: ['Circle','Triangle','Square'],
+  //     name: 'department_id',
+  //   }])
+  // .then( function savedata (response){
+  //   console.log(response)
+  //   add("department", "dep_name", response.dep_name);
+  // });
+
+} 
 
 const add = (table, tags, values) => {
-  console.log("In function ADD: ");
-  console.log(`INSERT INTO ${table} (${tags}) VALUES ("${values}");`)
-  db.query(`INSERT INTO ${table} (${tags}) VALUES (${values});`,
+  // console.log("In function ADD: ");
+  // console.log(`INSERT INTO ${table} (${tags}) VALUES ("${values}");`)
+  db.query(`INSERT INTO ${table} (${tags}) VALUES ("${values}");`,
+  // db.query(`INSERT INTO ? (?) VALUES (?);`, [table, tags, values],
     function (err, results) {
-      console.table(results)
+      console.log(`Added: ${values}`)
+      quitOrNext();
   });
 
-  console.log(`Added: ${values}`)
-  quitOrNext();
+  
 } 
 
 
