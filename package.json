@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,9 @@
   },
   "homepage": "https://github.com/Ximenacu/Employee_Tracker_CH12#readme",
   "dependencies": {
+    "express": "^4.18.2",
     "inquirer": "^8.2.4",
-    "inquirer-maxlength-input-prompt": "^1.0.2"
+    "inquirer-maxlength-input-prompt": "^1.0.2",
+    "mysql2": "^3.3.3"
   }
 }
