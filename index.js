@@ -38,8 +38,10 @@ var menu = () => {
       case "View all Roles": 
       view("*", "roles", "s", "JOIN department ON roles.department_id = department.id;");
         break;
-      case "View all Employees":
-        view("*", "employee", "s", "JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id"); 
+      case "View all Employees": 
+        //SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.dep_name AS department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN roles on employee.role_id = roles.id LEFT JOIN department on roles.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;
+        view("employee.id, employee.first_name, employee.last_name, roles.title, department.dep_name AS department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager", "employee", "s", "LEFT JOIN roles on employee.role_id = roles.id LEFT JOIN department on roles.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id"); 
+        // view("*", "employee", "s", "JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id JOIN employee AS employ_mg ON employee.manager_id = employ_mg.id"); 
         break;
       case "Add a Department":
         addDep();
@@ -48,7 +50,7 @@ var menu = () => {
         view("*","department", "c", "");
         break;
       case "Add an Employee":
-        view(mydata,"department");
+        view("*","roles", "c", "");
         break;
       case "Update an Employee Role":
         console.log("Update");
@@ -93,6 +95,7 @@ var quitOrNext = () => {
 // view("id, dep_name","department", "s"); for department
 // view("*", "roles", "s", "JOIN department ON roles.department_id = department.id;");
 // view("*", "employee", "s", "JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id;");
+// ADD an employe: view("*","roles", "c", "");
 const view = (which, specific, type, extra) => {
   console.log("In function VIEW: ", specific);
   console.log(`SELECT ${which} FROM ${specific} ${extra}`)
@@ -162,12 +165,46 @@ const addRole = (depchoice) => {
     console.log(response)
     db.query(`SELECT id FROM department WHERE dep_name ="${response.department_id}"`, function (err, results) {
       var iddd= results[0].id;
-      console.log("Query: " + )
+      // console.log("Query: " + )
       add("roles", "title, salary, department_id", `"${response.title}","${response.salary}","${iddd}"`);
     });
   });
 
 } 
+
+const addEmploy = (depchoice) => {
+  console.log("In function addEmploy: ");
+  inquirer
+  .prompt([
+    {
+      type: 'maxlength-input',
+      maxLength: 80,
+      message: 'Input the name of the New Role',
+      name: 'title',
+    },
+    {
+      type: 'input',
+      message: 'What is this Roles salary',
+      name: 'salary',
+    },
+    {
+      type: 'list',
+      message: 'To which department does this role belong to?',
+      choices: depchoice,
+      name: 'department_id',
+    }])
+  .then( function savedata (response){
+    console.log(response)
+    db.query(`SELECT id FROM department WHERE dep_name ="${response.department_id}"`, function (err, results) {
+      var iddd= results[0].id;
+      // console.log("Query: " + )
+      add("roles", "title, salary, department_id", `"${response.title}","${response.salary}","${iddd}"`);
+    });
+  });
+
+} 
+
+
 
 const add = (table, tags, values) => {
   // console.log("In function ADD: ");
