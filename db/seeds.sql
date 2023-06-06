@@ -7,7 +7,7 @@ VALUES ("Westeros Royalty"),
        ("Small Folk");
        
 INSERT INTO roles (title, salary, department_id)
-VALUES ("King of the Andals, the Rhoynar and the First Men. Lord of the 7 Kingdoms", "100000000", "1"),
+VALUES ("King of the 7 Kingdoms", "100000000", "1"),
        ("Queen of the Seven Kingdoms", "90000000", "1"),
        ("Prince/Princess of the 7 Kingdoms", "70000000", "1"),
        ("Hand of the King", "8500000", "2"),

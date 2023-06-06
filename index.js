@@ -33,19 +33,19 @@ var menu = () => {
     mydata=response;
     switch (mydata.name) {
       case "View all Departments": 
-        view("department", "s");
+        view("*","department", "s", "");
         break;
       case "View all Roles": 
-        view("roles", "s");
+      view("*", "roles", "s", "JOIN department ON roles.department_id = department.id;");
         break;
       case "View all Employees":
-        view("employee", "s");
+        view("*", "employee", "s", "JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id"); 
         break;
       case "Add a Department":
         addDep();
         break;
       case "Add a Role":
-        view("department", "c");
+        view("*","department", "c", "");
         break;
       case "Add an Employee":
         view(mydata,"department");
@@ -90,19 +90,20 @@ var quitOrNext = () => {
   menu();
 })();
 
-
-const view = (specific, type) => {
+// view("id, dep_name","department", "s"); for department
+// view("*", "roles", "s", "JOIN department ON roles.department_id = department.id;");
+// view("*", "employee", "s", "JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id;");
+const view = (which, specific, type, extra) => {
   console.log("In function VIEW: ", specific);
-  db.query(`SELECT * FROM ${specific}`, function (err, results) {
+  console.log(`SELECT ${which} FROM ${specific} ${extra}`)
+  db.query(`SELECT ${which} FROM ${specific} ${extra}`, function (err, results) {
     let res = results;
-    console.log("res.lenght: "+res.length)
-
 
     if (type =="s"){
+      console.log("in")
       console.table(results)
       quitOrNext();
     } else {
-      console.log("Before for: "+res.length)
       let i = res.length;
       var depchoice=[];  
       for (n=0; n<i;n++){
@@ -160,8 +161,8 @@ const addRole = (depchoice) => {
   .then( function savedata (response){
     console.log(response)
     db.query(`SELECT id FROM department WHERE dep_name ="${response.department_id}"`, function (err, results) {
-      console.log(results[0].id)
       var iddd= results[0].id;
+      console.log("Query: " + )
       add("roles", "title, salary, department_id", `"${response.title}","${response.salary}","${iddd}"`);
     });
   });
