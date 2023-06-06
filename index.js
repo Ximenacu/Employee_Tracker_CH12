@@ -33,19 +33,19 @@ var menu = () => {
     mydata=response;
     switch (mydata.name) {
       case "View all Departments": 
-        view("department");
+        view("department", "s");
         break;
       case "View all Roles": 
-        view("roles");
+        view("roles", "s");
         break;
       case "View all Employees":
-        view("employee");
+        view("employee", "s");
         break;
       case "Add a Department":
         addDep();
         break;
       case "Add a Role":
-        addRole();
+        view("department", "c");
         break;
       case "Add an Employee":
         view(mydata,"department");
@@ -91,16 +91,29 @@ var quitOrNext = () => {
 })();
 
 
-const view = (specific) => {
+const view = (specific, type) => {
   console.log("In function VIEW: ", specific);
   db.query(`SELECT * FROM ${specific}`, function (err, results) {
     let res = results;
-    console.table(results)
-    // console.log(res.length)
-    // console.log(res[0].dep_name)
-    return res;
-    quitOrNext();
+    console.log("res.lenght: "+res.length)
+
+
+    if (type =="s"){
+      console.table(results)
+      quitOrNext();
+    } else {
+      console.log("Before for: "+res.length)
+      let i = res.length;
+      var depchoice=[];  
+      for (n=0; n<i;n++){
+        depchoice.push(res[n].dep_name); 
+      }
+      console.log("Depchoice: "+depchoice);
+      addRole(depchoice);
+    }
   });
+  
+  
 } 
 
 // ----------------------------------------------------------
@@ -117,57 +130,53 @@ const addDep = () => {
   )
   .then( function savedata (response){
     console.log(response)
-    add("department", "dep_name", response.dep_name);
+    add("department", "dep_name", `"${response.dep_name}"`);
+    // add("department", "dep_name", response.dep_name);
   });
 
 } 
 
-const addRole = () => {
+const addRole = (depchoice) => {
   console.log("In function ADDROLE: ");
-  var depchoice =[];
-  view("department");
-  for (n=0; n<res.lenght;n++){
-    depchoice.push(res[n].dep_name)
-  }
-  console.log(depchoice);
-// HEEEEEEEEEEEEEEEEEEEEEEEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-  // inquirer
-  // .prompt([
-  //   {
-  //     type: 'maxlength-input',
-  //     maxLength: 80,
-  //     message: 'Input the name of the New Role',
-  //     name: 'title',
-  //   },
-  //   {
-  //     type: 'input',
-  //     message: 'What is this Roles salary',
-  //     name: 'salary',
-  //   },
-  //   {
-  //     type: 'list',
-  //     message: 'To which department does this role belong to?',
-  //     choices: ['Circle','Triangle','Square'],
-  //     name: 'department_id',
-  //   }])
-  // .then( function savedata (response){
-  //   console.log(response)
-  //   add("department", "dep_name", response.dep_name);
-  // });
+  inquirer
+  .prompt([
+    {
+      type: 'maxlength-input',
+      maxLength: 80,
+      message: 'Input the name of the New Role',
+      name: 'title',
+    },
+    {
+      type: 'input',
+      message: 'What is this Roles salary',
+      name: 'salary',
+    },
+    {
+      type: 'list',
+      message: 'To which department does this role belong to?',
+      choices: depchoice,
+      name: 'department_id',
+    }])
+  .then( function savedata (response){
+    console.log(response)
+    db.query(`SELECT id FROM department WHERE dep_name ="${response.department_id}"`, function (err, results) {
+      console.log(results[0].id)
+      var iddd= results[0].id;
+      add("roles", "title, salary, department_id", `"${response.title}","${response.salary}","${iddd}"`);
+    });
+  });
 
 } 
 
 const add = (table, tags, values) => {
   // console.log("In function ADD: ");
-  // console.log(`INSERT INTO ${table} (${tags}) VALUES ("${values}");`)
-  db.query(`INSERT INTO ${table} (${tags}) VALUES ("${values}");`,
+  console.log(`INSERT INTO ${table} (${tags}) VALUES (${values});`)
+  db.query(`INSERT INTO ${table} (${tags}) VALUES (${values});`,
   // db.query(`INSERT INTO ? (?) VALUES (?);`, [table, tags, values],
     function (err, results) {
       console.log(`Added: ${values}`)
       quitOrNext();
   });
-
-  
 } 
 
 
