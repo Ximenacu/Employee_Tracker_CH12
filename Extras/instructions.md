@@ -51,20 +51,16 @@ THEN I am prompted to enter the employee’s first name, last name, role, and ma
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database ✅
 
 ## Deliverables 
-* Loads with no errors and is console free of errors
+* Loads with no errors and is console free of errors  ✅
 * Github Repo link submited
     * Quality README 
 * Walkthrough Video (submit and link in readme)
     * must show all of the technical acceptance criteria being met.
     * must demonstrate how a user would invoke the application from the command line.
     * must demonstrate a functional menu with the options outlined in the acceptance criteria.
-* uses inquirer 
-* mysql2
+* uses inquirer  ✅
+* mysql2  ✅
 * Bonus will add 10 pts
 
-* Walckthrough Video 
-    * The walkthrough video must show all tests passing from the command line.
-    * The walkthrough video must demonstrate how a user would invoke the application from the command line.
-    * The walkthrough video must demonstrate how a user would enter responses to all of the prompts in the application.
-    * The walkthrough video must demonstrate a generated SVG file, showing the file being opened in the browser. The image in the browser must reflect the choices made by the user (text, shape, and colors).
+
     

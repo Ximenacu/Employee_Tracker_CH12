@@ -25,7 +25,6 @@ var menu = () => {
       type: 'list',
       message: 'What would you like to do?',
       choices: list,
-      // default: 'View all Departments',
       name: 'name',
     },
   )
@@ -39,9 +38,7 @@ var menu = () => {
       view("*", "roles", "s", "JOIN department ON roles.department_id = department.id;");
         break;
       case "View all Employees": 
-        //SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.dep_name AS department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN roles on employee.role_id = roles.id LEFT JOIN department on roles.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;
         view("employee.id, employee.first_name, employee.last_name, roles.title, department.dep_name AS department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager", "employee", "s", "LEFT JOIN roles on employee.role_id = roles.id LEFT JOIN department on roles.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id"); 
-        // view("*", "employee", "s", "JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id JOIN employee AS employ_mg ON employee.manager_id = employ_mg.id"); 
         break;
       case "Add a Department":
         addDep();
@@ -58,10 +55,10 @@ var menu = () => {
       default:
         console.log(`An error has occured.`);
     }
-    // newFile(mydata);
   });
 }
 
+// menu 2 (continue or quit)
 const list2 = ["Next Search", "Quit"]
 var quitOrNext = () => {
   inquirer
@@ -70,59 +67,49 @@ var quitOrNext = () => {
       type: 'list',
       message: 'What would you like to do next?',
       choices: list2,
-      // default: 'Quit',
       name: 'name',
     },
   )
   .then( function savedata (response){
-    console.log(response)
     if (response.name == "Next Search"){
       menu();
     } else {
-      db.query(`quit;`, function (err, results) {
         console.log("See you!")
         process.exit();
-      });
     }
   });
 }
 
 
-// ------------ initialize inquierer.
+// ------------ initialize inquierer menu.
 (function () {
   menu();
 })();
 
 
 const view = (which, specific, type, extra) => {
-  console.log("In function VIEW: ", specific);
+  // console.log("In function VIEW: ", specific);
   var roleschoice=[]; 
-  console.log(`SELECT ${which} FROM ${specific} ${extra}`)
+  // console.log(`SELECT ${which} FROM ${specific} ${extra}`)
   db.query(`SELECT ${which} FROM ${specific} ${extra}`, function (err, results) {
     let res = results;
 
     if (type =="s"){
-      console.log("in")
       console.table(results)
       quitOrNext();
     } else if (type =="role") {
       let i = res.length;
       var depchoice=[];  
       for (n=0; n<i;n++){
-        // depchoice.push(res[n].dep_name); 
         depchoice.push(res[n].dep_name);
       }
-      console.log("Depchoice: "+depchoice);
       addRole(depchoice);
     } else if (type =="employee"||type =="update"){
       let i = res.length;
-      // var roleschoice=[];  
       for (n=0; n<i;n++){
         roleschoice.push(res[n].title); 
       }
-      console.log("roleschoice: "+roleschoice);
-      // START 
-      console.log(`SELECT * from employee`)
+
           db.query(`SELECT * from employee`, function (err, results) {
               let res2 = results;
               let i = res2.length;
@@ -130,7 +117,6 @@ const view = (which, specific, type, extra) => {
               for (n=0; n<i;n++){
                 managerchoice.push(res2[n].first_name); 
               }
-              console.log("managerchoice: "+managerchoice);
               if (type =="employee"){
                 addEmploy(roleschoice, managerchoice);
               } else if (type =="update"){
@@ -138,19 +124,13 @@ const view = (which, specific, type, extra) => {
               }
               
           });
-      // END
     }
-  });
-  // if (type =="employee"){
-    
-  // }
-  
-  
+  });  
 } 
 
 // ----------------------------------------------------------
 const addDep = () => {
-  console.log("In function ADDDEP: ");
+  // console.log("In function ADDDEP: ");
   inquirer
   .prompt(
     {
@@ -161,15 +141,13 @@ const addDep = () => {
     },
   )
   .then( function savedata (response){
-    console.log(response)
     add("department", "dep_name", `"${response.dep_name}"`);
-    // add("department", "dep_name", response.dep_name);
   });
 
 } 
 
 const addRole = (depchoice) => {
-  console.log("In function ADDROLE: ");
+  // console.log("In function ADDROLE: ");
   inquirer
   .prompt([
     {
@@ -190,10 +168,8 @@ const addRole = (depchoice) => {
       name: 'department_id',
     }])
   .then( function savedata (response){
-    console.log(response)
     db.query(`SELECT id FROM department WHERE dep_name ="${response.department_id}"`, function (err, results) {
       var iddd= results[0].id;
-      // console.log("Query: " + )
       add("roles", "title, salary, department_id", `"${response.title}","${response.salary}","${iddd}"`);
     });
   });
@@ -201,7 +177,7 @@ const addRole = (depchoice) => {
 } 
 
 const addEmploy = (roleschoice, managerchoice) => {
-  console.log("In function addEmploy: ");
+  // console.log("In function addEmploy: ");
   inquirer
   .prompt([
     {
@@ -229,7 +205,6 @@ const addEmploy = (roleschoice, managerchoice) => {
       name: 'manager_name',
     }])
   .then( function savedata (response){
-    console.log(response)
     db.query(`SELECT id FROM roles WHERE title ="${response.role_name}"`, function (err, results) {
       var iddd= results[0].id;
 
@@ -243,7 +218,7 @@ const addEmploy = (roleschoice, managerchoice) => {
 } 
 
 const updtRole = (roleschoice, employeechoice) => {
-  console.log("In function updtRole: ");
+  // console.log("In function updtRole: ");
   inquirer
   .prompt([
     {
@@ -259,13 +234,11 @@ const updtRole = (roleschoice, employeechoice) => {
       name: 'role_name',
     }])
   .then( function savedata (response){
-    console.log(response)
     db.query(`SELECT id FROM roles WHERE title ="${response.role_name}"`, function (err, results) {
       var iddd= results[0].id;
       console.log("iddd: "+iddd);
       // db.query(`SELECT id FROM employee WHERE first_name ="${response.employee}"`, function (err, results) {
         // var iddd2= results[0].id;
-        // console.log("iddd2: "+iddd2);
         console.log(`UPDATE employee SET role_id ="${iddd}" WHERE first_name ="${response.employee}"`)
         db.query(`UPDATE employee SET role_id ="${iddd}" WHERE first_name ="${response.employee}"`, function (err, results) {
           quitOrNext();
@@ -281,7 +254,6 @@ const add = (table, tags, values) => {
   // console.log("In function ADD: ");
   console.log(`INSERT INTO ${table} (${tags}) VALUES (${values});`)
   db.query(`INSERT INTO ${table} (${tags}) VALUES (${values});`,
-  // db.query(`INSERT INTO ? (?) VALUES (?);`, [table, tags, values],
     function (err, results) {
       console.log(`Added: ${values}`)
       quitOrNext();
